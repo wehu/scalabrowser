@@ -8,6 +8,7 @@ class Test extends FXApp {
   width = 300
   height = 80
   val app = new App {
+    val dq = DispatchQueue {}
     override def default = {
       loadContent(<span>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -31,12 +32,17 @@ info: <span id="output"></span>
 </span>)
     }
     def test(in: String){
+      dq.dispatch[Unit]({
+	     try {println("aaaaa")}
+	        catch {case e => "Error: " + e.toString()}
+	  })
       evalJS("""$("#output").html("<span>""" + in + "</span>\")")
     }
     override def onLoaded = {
       info("web loaded")
     }
     override def onClose = {
+      dq.stop
       info("app closed")
     }
   }
