@@ -33,6 +33,12 @@ info: <span id="output"></span>
     def test(in: String){
       evalJS("""$("#output").html("<span>""" + in + "</span>\")")
     }
+    override def onLoaded = {
+      info("web loaded")
+    }
+    override def onClose = {
+      info("app closed")
+    }
   }
 }
 

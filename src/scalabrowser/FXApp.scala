@@ -8,7 +8,7 @@ import javafx.scene.control.Label
 import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
 import javafx.scene.layout.Region
-import javafx.scene.layout.HBox
+import javafx.event.EventHandler
 import javafx.scene.layout.Priority
 import javafx.geometry.HPos
 import javafx.geometry.VPos
@@ -18,6 +18,7 @@ import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.concurrent.Worker.State
 import netscape.javascript.JSObject
+import javafx.stage.WindowEvent;
 
 abstract class FXApp extends Application {
   
@@ -26,6 +27,9 @@ abstract class FXApp extends Application {
     def default = {
       loadContent("Hello World")
     }
+    def init = {}
+    def onLoaded = {}
+    def onClose = {}
     final def webEngine: WebEngine = {
       if(_webEngine == null) {throw new Exception("Unknown webEngine")}
       _webEngine
@@ -62,6 +66,7 @@ abstract class FXApp extends Application {
           if (newState == State.SUCCEEDED) {
             val win = webEngine.executeScript("window")
             win.asInstanceOf[JSObject].setMember("app", app)
+            app.onLoaded
           }
         }
       }
@@ -88,7 +93,13 @@ abstract class FXApp extends Application {
     val browser = new Browser(app)
     val scene = new Scene(browser, width, height, bgColor)
     stage.setScene(scene)
+    app.init;
     stage.show()
+    stage.setOnCloseRequest(new EventHandler[WindowEvent]() {
+      def handle(we: WindowEvent) {
+          app.onClose;
+      }
+    })
   }
   
 }
