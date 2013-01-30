@@ -17,8 +17,8 @@ import scalabrowser._
 
 class WeiBo extends FXApp {
   title = "WeiBo"
-  val clientID = ""
-  val clientSecret = ""
+  val clientID = "" // should be set by user
+  val clientSecret = "" // should be set by user
   val redirectURI = "https://api.weibo.com/oauth2/default.html"
   val authURI = "https://api.weibo.com/2/oauth2"
   var code = ""
