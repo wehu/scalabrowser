@@ -27,7 +27,7 @@ abstract class FXApp extends Application {
     def default = {
       loadContent("Hello World")
     }
-    def init = {}
+    def onInit = {}
     def onLoaded = {}
     def onClose = {}
     final def webEngine: WebEngine = {
@@ -93,7 +93,7 @@ abstract class FXApp extends Application {
     val browser = new Browser(app)
     val scene = new Scene(browser, width, height, bgColor)
     stage.setScene(scene)
-    app.init;
+    app.onInit;
     stage.show()
     stage.setOnCloseRequest(new EventHandler[WindowEvent]() {
       def handle(we: WindowEvent) {

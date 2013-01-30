@@ -32,10 +32,10 @@ info: <span id="output"></span>
 </span>)
     }
     def test(in: String){
-      dq.dispatch[Unit]({
-	     try {println("aaaaa")}
-	        catch {case e => "Error: " + e.toString()}
-	  })
+      dq.dispatch[Unit] {
+	    try {info("test")}
+	    catch {case e => "Error: " + e.toString()}
+	  }
       evalJS("""$("#output").html("<span>""" + in + "</span>\")")
     }
     override def onLoaded = {
