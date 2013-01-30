@@ -49,8 +49,8 @@ abstract class FXApp extends Application {
     final def info(v: String){
       println(v)
     }
-    final def evalJS(s: String): JSObject = {
-      webEngine.executeScript(s).asInstanceOf[JSObject]
+    final def evalJS(s: String) = {
+      webEngine.executeScript(s)
     }
   }
   
