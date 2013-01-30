@@ -2,14 +2,10 @@
 import scala.xml.Unparsed
 import javafx.application.Application
 import scala.io.Source.fromURL
+import io.Source.fromInputStream
 import scala.util.parsing.json._
 import java.net.{URLConnection, URL}
 import java.io.OutputStreamWriter
-import java.io.StringWriter
-import java.io.Writer
-import java.io.Reader
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 import scala.xml.Node
 
@@ -23,6 +19,7 @@ class WeiBo extends FXApp {
   val authURI = "https://api.weibo.com/2/oauth2"
   var code = ""
   var accessToken = ""
+    
   abstract class OAuth2Phase
   case class AuthPhase() extends OAuth2Phase
   case class AuthPhaseDone() extends OAuth2Phase
@@ -30,7 +27,7 @@ class WeiBo extends FXApp {
   
   var encoding = "UTF-8"
   val app = new App {
-    //val dq = DispatchQueue {}
+    val dq = DispatchQueue {}
     override def default = {
       authPhase = AuthPhase()
       load(authURI+"/authorize?"+
@@ -113,25 +110,16 @@ class WeiBo extends FXApp {
     def post(url: String): Any = {
       val u = new URL(url)
       val conn = u.openConnection
+      conn.setDoInput(true)
       conn.setDoOutput(true)
       conn.setConnectTimeout(5000)
       conn.connect
       val wr = new OutputStreamWriter(conn.getOutputStream())
       wr.flush
       wr.close
-      val is = conn.getInputStream
-      val writer: Writer = new StringWriter() 
-      var buffer = Array[Char](1024)
-      val reader: Reader = new BufferedReader(
-         new InputStreamReader(is, encoding))
-      var n = 0
-      n = reader.read(buffer)
-      while (n != -1) {
-        writer.write(buffer, 0, n)
-        n = reader.read(buffer)
-      }
-      is.close()
-      val resp = writer.toString()
+      val in = conn.getInputStream()
+      val resp = fromInputStream(in).mkString
+      in.close
       JSONParse(resp)
     }
       
@@ -145,7 +133,7 @@ class WeiBo extends FXApp {
       }
     }
     override def onClose = {
-      //dq.stop
+      dq.stop
     }
   }
 }
